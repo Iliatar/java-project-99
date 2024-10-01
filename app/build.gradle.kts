@@ -5,6 +5,7 @@ plugins {
 	application
 	id("org.springframework.boot") version "3.3.4"
 	id("io.spring.dependency-management") version "1.1.6"
+	jacoco
 }
 
 group = "hexlet.code"
@@ -43,3 +44,5 @@ tasks.test {
 }
 
 application { mainClass.set("hexlet.code.AppApplication") }
+
+tasks.jacocoTestReport { reports { xml.required.set(true) } }
