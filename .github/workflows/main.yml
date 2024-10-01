@@ -15,7 +15,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 8.10
+          gradle-version: 8.6
           arguments: build
           build-root-directory: ./app
       - name: Publish code coverage
