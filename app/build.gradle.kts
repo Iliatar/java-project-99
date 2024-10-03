@@ -31,6 +31,7 @@ dependencies {
 
 	implementation("net.datafaker:datafaker:2.0.1")
 	implementation("org.instancio:instancio-junit:3.3.0")
+	implementation("org.postgresql:postgresql:42.7.2")
 
 	runtimeOnly("com.h2database:h2")
 
