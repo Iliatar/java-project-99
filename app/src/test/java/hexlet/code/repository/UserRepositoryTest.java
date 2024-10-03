@@ -1,6 +1,7 @@
 package hexlet.code.repository;
 
 import org.instancio.Select;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,28 +21,43 @@ public class UserRepositoryTest {
     @Autowired
     private Faker faker;
 
-    private long recordsCount;
+    private static User testUser;
 
     @Test
-    public void createTest() {
-        recordsCount = repository.count();
-        User user = getFakerUser();
-        String firstName = user.getFirstName();
-        String lastName = user.getLastName();
-        String email = user.getEmail();
-        String password = user.getPassword();
+    @Order(1)
+    public void repositoryTest() {
+        long recordsCount = repository.count();
+        testUser = getFakerUser();
+        String firstName = testUser.getFirstName();
+        String lastName = testUser.getLastName();
+        String email = testUser.getEmail();
+        String password = testUser.getPassword();
 
-        repository.save(user);
+        repository.save(testUser);
         assertThat(repository.count()).isEqualTo(++recordsCount);
 
-        Long id = user.getId();
-        user = repository.findById(id).get();
+        Long id = testUser.getId();
+        testUser = repository.findById(id).get();
 
-        assertThat(user.getFirstName()).isEqualTo(firstName);
-        assertThat(user.getLastName()).isEqualTo(lastName);
-        assertThat(user.getPassword()).isEqualTo(password);
-        assertThat(user.getEmail()).isEqualTo(email);
-        assertThat(user.getCreatedAt().getDayOfYear()).isEqualTo(LocalDate.now().getDayOfYear());
+        assertThat(testUser.getFirstName()).isEqualTo(firstName);
+        assertThat(testUser.getLastName()).isEqualTo(lastName);
+        assertThat(testUser.getPassword()).isEqualTo(password);
+        assertThat(testUser.getEmail()).isEqualTo(email);
+        assertThat(testUser.getCreatedAt().getDayOfYear()).isEqualTo(LocalDate.now().getDayOfYear());
+
+        String newName = faker.name().firstName();
+        String newLastName = faker.name().lastName();
+        testUser.setFirstName(newName);
+        testUser.setLastName(newLastName);
+        repository.save(testUser);
+
+        testUser = repository.findById(testUser.getId()).get();
+        assertThat(testUser.getFirstName()).isEqualTo(newName);
+        assertThat(testUser.getLastName()).isEqualTo(newLastName);
+
+        repository.deleteById(testUser.getId());
+        assertThat(repository.count()).isEqualTo(--recordsCount);
+        assertThat(repository.findById(testUser.getId()).isPresent()).isFalse();
     }
 
     private User getFakerUser() {
