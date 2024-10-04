@@ -1,8 +1,11 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.dto.UserDTO;
+import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.FakerTestData;
+import jdk.jshell.spi.ExecutionControl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,6 +31,9 @@ public class UserControllerTests {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserMapper userMapper;
+
     @Test
     public void testIndex() throws Exception {
         var result = mockMvc.perform(get("/api/users"))
@@ -37,6 +43,7 @@ public class UserControllerTests {
         assertThatJson(body).isArray();
     }
 
+    @Test
     public void testShow() throws Exception {
         var user = FakerTestData.getFakerUser();
         userRepository.save(user);
@@ -58,14 +65,14 @@ public class UserControllerTests {
         );
     }
 
+    @Test
     public void testCreate() throws Exception {
         var testUser = FakerTestData.getFakerUser();
-
-        //перемапить User на UserCreateDTO
+        var userDTO = userMapper.map(testUser);
 
         var request = post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(testUser));
+                .content(om.writeValueAsString(userDTO));
 
         var result = mockMvc.perform(request)
                 .andExpect(status().isCreated())
@@ -80,6 +87,7 @@ public class UserControllerTests {
         assertThat(savedUser.getEmail()).isEqualTo(testUser.getEmail());
     }
 
+    @Test
     public void testUpdate() throws Exception {
         var testUser = FakerTestData.getFakerUser();
         userRepository.save(testUser);
@@ -90,11 +98,11 @@ public class UserControllerTests {
         testUser.setFirstName(newFirstName);
         testUser.setLastName(newLastName);
 
-        //перемапить User на UserUpdateDTO
+        var userDTO = userMapper.map(testUser);
 
         var request = put("/api/users/" + testUser.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(testUser));
+                .content(om.writeValueAsString(userDTO));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk());
@@ -105,6 +113,7 @@ public class UserControllerTests {
         assertThat(testUser.getLastName()).isEqualTo(newLastName);
     }
 
+    @Test
     public void testDelete() throws Exception {
         var testUser = FakerTestData.getFakerUser();
         userRepository.save(testUser);
@@ -116,5 +125,10 @@ public class UserControllerTests {
 
         var maybeUser = userRepository.findById(testUser.getId());
         assertThat(maybeUser).isNotPresent();
+    }
+
+    @Test
+    public void testCreateWithEmptyFields() throws Exception {
+        throw new ExecutionControl.NotImplementedException("Not implemented yet");
     }
 }

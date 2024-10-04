@@ -5,21 +5,22 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.openapitools.jackson.nullable.JsonNullable;
 
 @Getter
 @Setter
 public class UserUpdateDTO {
 
-    @NotNull
     @Email
-    private String email;
-
-    private String firstName;
-
-    private String lastName;
-
     @NotNull
+    private JsonNullable<String> email;
+
+    private JsonNullable<String> firstName;
+
+    private JsonNullable<String> lastName;
+
     @Length(min = 3)
-    private String password;
+    @NotNull
+    private JsonNullable<String> password;
 
 }
