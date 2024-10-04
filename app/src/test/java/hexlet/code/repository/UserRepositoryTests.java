@@ -1,11 +1,10 @@
 package hexlet.code.repository;
 
-import org.instancio.Select;
+import hexlet.code.utils.FakerTestData;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.instancio.Instancio;
 import net.datafaker.Faker;
 
 import hexlet.code.model.User;
@@ -14,7 +13,7 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class UserRepositoryTest {
+public class UserRepositoryTests {
     @Autowired
     private UserRepository repository;
 
@@ -27,7 +26,7 @@ public class UserRepositoryTest {
     @Order(1)
     public void repositoryTest() {
         long recordsCount = repository.count();
-        testUser = getFakerUser();
+        testUser = FakerTestData.getFakerUser();
         String firstName = testUser.getFirstName();
         String lastName = testUser.getLastName();
         String email = testUser.getEmail();
@@ -58,16 +57,5 @@ public class UserRepositoryTest {
         repository.deleteById(testUser.getId());
         assertThat(repository.count()).isEqualTo(--recordsCount);
         assertThat(repository.findById(testUser.getId()).isPresent()).isFalse();
-    }
-
-    private User getFakerUser() {
-        User user = Instancio.of(User.class)
-                .ignore(Select.field(User::getId))
-                .supply(Select.field(User::getFirstName), () -> faker.name().firstName())
-                .supply(Select.field(User::getLastName), () -> faker.name().lastName())
-                .supply(Select.field(User::getEmail), () -> faker.internet().emailAddress())
-                .supply(Select.field(User::getPassword), () -> faker.internet().password())
-                .create();
-        return user;
     }
 }

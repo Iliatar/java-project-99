@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -26,11 +27,8 @@ public class User {
     @GeneratedValue(strategy = IDENTITY)
     private long id;
 
-
-    @NotNull
     private String firstName;
 
-    @NotNull
     private String lastName;
 
     @NotNull
@@ -38,6 +36,7 @@ public class User {
     private String email;
 
     @NotNull
+    @Length(min = 3)
     private String password;
 
     @CreatedDate
