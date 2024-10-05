@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -28,5 +30,14 @@ public class UserController {
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
         var userDTO = userMapper.map(user);
         return userDTO;
+    }
+
+    @GetMapping(path = "")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDTO> index() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::map)
+                .toList();
     }
 }

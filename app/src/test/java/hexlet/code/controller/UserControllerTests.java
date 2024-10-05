@@ -25,6 +25,7 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserControllerTests {
+    private static final int TEST_USERS_COUNT_FOR_INDEX = 10;
     @Autowired
     private MockMvc mockMvc;
 
@@ -37,14 +38,18 @@ public class UserControllerTests {
     @Autowired
     UserMapper userMapper;
 
-/*    @Test
-*//*    public void testIndex() throws Exception {
+    @Test
+    public void testIndex() throws Exception {
+        for (int i = 0; i < TEST_USERS_COUNT_FOR_INDEX; i++) {
+            userRepository.save(FakerTestData.getFakerUser());
+        }
+
         var result = mockMvc.perform(get("/api/users"))
                 .andExpect(status().isOk())
                 .andReturn();
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).isArray();
-    }*/
+    }
 
     @Test
     public void testShow() throws Exception {
