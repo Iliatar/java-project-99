@@ -3,14 +3,12 @@ package hexlet.code.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.UserCreateDTO;
 import hexlet.code.dto.UserDTO;
-//import hexlet.code.dto.UserUpdateDTO;
-//import hexlet.code.mapper.JsonNullableMapper;
+import hexlet.code.dto.UserUpdateDTO;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.FakerTestData;
-//import jdk.jshell.spi.ExecutionControl;
 import org.junit.jupiter.api.Test;
-//import org.openapitools.jackson.nullable.JsonNullable;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
@@ -101,7 +101,7 @@ public class UserControllerTests {
         assertThat(savedUser.getEmail()).isEqualTo(testUser.getEmail());
     }
 
-/*    @Test
+    @Test
     public void testUpdate() throws Exception {
         var testUser = FakerTestData.getFakerUser();
         userRepository.save(testUser);
@@ -124,9 +124,27 @@ public class UserControllerTests {
 
         assertThat(testUser.getFirstName()).isEqualTo(newFirstName);
         assertThat(testUser.getLastName()).isEqualTo(newLastName);
-    }*/
+    }
 
-/*    @Test
+    @Test
+    public void testUpdateWithIncorrectData() throws Exception {
+        var testUser = FakerTestData.getFakerUser();
+        userRepository.save(testUser);
+
+        var newPassword = testUser.getPassword().substring(0, 2);
+
+        var userUpdateDTO = new UserUpdateDTO();
+        userUpdateDTO.setPassword(JsonNullable.of(newPassword));
+
+        var request = put("/api/users/" + testUser.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(userUpdateDTO));
+
+        mockMvc.perform(request)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void testDelete() throws Exception {
         var testUser = FakerTestData.getFakerUser();
         userRepository.save(testUser);
@@ -134,11 +152,11 @@ public class UserControllerTests {
         var request = delete("/api/users/" + testUser.getId());
 
         mockMvc.perform(request)
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         var maybeUser = userRepository.findById(testUser.getId());
         assertThat(maybeUser).isNotPresent();
-    }*/
+    }
 
     @Test
     public void testCreateWithEmptyFields() throws Exception {
