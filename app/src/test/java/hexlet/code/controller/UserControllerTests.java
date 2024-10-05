@@ -1,7 +1,8 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-//import hexlet.code.dto.UserDTO;
+import hexlet.code.dto.UserCreateDTO;
+import hexlet.code.dto.UserDTO;
 //import hexlet.code.dto.UserUpdateDTO;
 //import hexlet.code.mapper.JsonNullableMapper;
 import hexlet.code.mapper.UserMapper;
@@ -13,14 +14,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.http.MediaType;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
-//import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -73,14 +75,18 @@ public class UserControllerTests {
         );
     }
 
-/*    @Test
+    @Test
     public void testCreate() throws Exception {
         var testUser = FakerTestData.getFakerUser();
-        var userDTO = userMapper.map(testUser);
+        var createDTO = new UserCreateDTO();
+        createDTO.setEmail(testUser.getEmail());
+        createDTO.setFirstName(testUser.getFirstName());
+        createDTO.setLastName(testUser.getLastName());
+        createDTO.setPassword(testUser.getPassword());
 
         var request = post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(userDTO));
+                .content(om.writeValueAsString(createDTO));
 
         var result = mockMvc.perform(request)
                 .andExpect(status().isCreated())
@@ -93,7 +99,7 @@ public class UserControllerTests {
         assertThat(savedUser.getFirstName()).isEqualTo(testUser.getFirstName());
         assertThat(savedUser.getLastName()).isEqualTo(testUser.getLastName());
         assertThat(savedUser.getEmail()).isEqualTo(testUser.getEmail());
-    }*/
+    }
 
 /*    @Test
     public void testUpdate() throws Exception {
@@ -134,10 +140,21 @@ public class UserControllerTests {
         assertThat(maybeUser).isNotPresent();
     }*/
 
-/*    @Test
+    @Test
     public void testCreateWithEmptyFields() throws Exception {
-        throw new ExecutionControl.NotImplementedException("Not implemented yet");
-    }*/
+        var testUser = FakerTestData.getFakerUser();
+        var createDTO = new UserCreateDTO();
+        createDTO.setEmail(testUser.getEmail());
+        createDTO.setFirstName(testUser.getFirstName());
+        createDTO.setLastName(testUser.getLastName());
+
+        var request = post("/api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(createDTO));
+
+        mockMvc.perform(request)
+                .andExpect(status().isBadRequest());
+    }
 
     @Test
     public void testShowWithIncorrectId() throws Exception {
