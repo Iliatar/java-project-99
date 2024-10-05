@@ -134,8 +134,9 @@ public class UserControllerTests {
         throw new ExecutionControl.NotImplementedException("Not implemented yet");
     }*/
 
-/*    @Test
+    @Test
     public void testShowWithIncorrectId() throws Exception {
-        throw new ExecutionControl.NotImplementedException("Not implemented yet");
-    }*/
+        mockMvc.perform(get("/api/users/67986846"))
+                .andExpect(status().isNotFound());
+    }
 }
