@@ -19,6 +19,10 @@ public class FakerTestData {
         return user;
     }
 
-    public static String getFakerUserFirstName() { return faker.name().firstName(); }
-    public static String getFakerUserLastName() { return faker.name().lastName(); }
+    public static String getFakerUserFirstName() {
+        return faker.name().firstName();
+    }
+    public static String getFakerUserLastName() {
+        return faker.name().lastName();
+    }
 }
