@@ -6,7 +6,7 @@ import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
-import hexlet.code.utils.FakerTestData;
+import hexlet.code.service.FakerTestData;
 import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserControllerTests {
-    private static final int TEST_USERS_COUNT_FOR_INDEX = 10;
     @Autowired
     private MockMvc mockMvc;
 
@@ -42,10 +41,6 @@ public class UserControllerTests {
 
     @Test
     public void testIndex() throws Exception {
-        for (int i = 0; i < TEST_USERS_COUNT_FOR_INDEX; i++) {
-            userRepository.save(FakerTestData.getFakerUser());
-        }
-
         var result = mockMvc.perform(get("/api/users"))
                 .andExpect(status().isOk())
                 .andReturn();

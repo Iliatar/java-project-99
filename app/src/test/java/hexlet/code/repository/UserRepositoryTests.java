@@ -1,6 +1,6 @@
 package hexlet.code.repository;
 
-import hexlet.code.utils.FakerTestData;
+import hexlet.code.service.FakerTestData;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
