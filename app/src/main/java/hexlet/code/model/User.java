@@ -44,7 +44,7 @@ public class User implements UserDetails {
 
     @NotNull
     @Length(min = 3)
-    private String password;
+    private String passwordDigest;
 
     @CreatedDate
     private LocalDate createdAt;
@@ -59,7 +59,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return passwordDigest;
     }
 
     @Override
