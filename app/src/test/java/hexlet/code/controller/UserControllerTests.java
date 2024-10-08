@@ -6,7 +6,7 @@ import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
-import hexlet.code.service.FakerTestData;
+import hexlet.code.utils.FakerTestData;
 import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package hexlet.code.component;
 
 import hexlet.code.model.User;
 import hexlet.code.service.CustomUserDetailsService;
-import hexlet.code.service.FakerTestData;
+import hexlet.code.utils.FakerTestData;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -17,9 +17,6 @@ public class DataInitializer implements ApplicationRunner {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
-    @Autowired
-    private FakerTestData fakerTestData;
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
         for (int i = 0; i < TEST_USERS_COUNT_FOR_INDEX; i++) {
@@ -30,7 +27,7 @@ public class DataInitializer implements ApplicationRunner {
         adminUser.setFirstName("admin");
         adminUser.setLastName("admin");
         adminUser.setEmail("hexlet@example.com");
-        adminUser.setPassword("qwerty");
+        adminUser.setPasswordDigest("qwerty");
 
         userDetailsService.createUser(adminUser);
     }

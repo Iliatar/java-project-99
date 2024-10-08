@@ -6,6 +6,8 @@ import hexlet.code.dto.UserUpdateDTO;
 import org.mapstruct.*;
 import hexlet.code.model.User;
 import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -22,15 +24,12 @@ public abstract class UserMapper {
     public abstract User map(UserCreateDTO createDTO);
     public abstract void update(UserUpdateDTO updateDTO, @MappingTarget User user);
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @BeforeMapping
     public void encryptPassword(UserCreateDTO createDTO) {
-        var password = createDTO.getPassword();
-        try {
-            var md = MessageDigest.getInstance("SHA-512");
-            password = md.digest(password.getBytes()).toString();
-        } catch (NoSuchAlgorithmException ex) {
-            throw new RuntimeException(ex.getMessage());
-        }
+        var password = passwordEncoder.encode(createDTO.getPassword());
         createDTO.setPassword(password);
     }
 
@@ -41,14 +40,7 @@ public abstract class UserMapper {
             return;
         }
 
-        var password = jsonNullable.get();
-
-        try {
-            var md = MessageDigest.getInstance("SHA-512");
-            password = md.digest(password.getBytes()).toString();
-        } catch (NoSuchAlgorithmException ex) {
-            throw new RuntimeException(ex.getMessage());
-        }
+        var password = passwordEncoder.encode(jsonNullable.get());
         updateDTO.setPassword(JsonNullable.of(password));
     }
 }

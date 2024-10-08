@@ -1,4 +1,4 @@
-package hexlet.code.service;
+package hexlet.code.utils;
 
 import hexlet.code.model.User;
 import net.datafaker.Faker;
@@ -6,7 +6,6 @@ import org.instancio.Instancio;
 import org.instancio.Select;
 import org.springframework.stereotype.Component;
 
-@Component
 public class FakerTestData {
 
     private static Faker faker = new Faker();
