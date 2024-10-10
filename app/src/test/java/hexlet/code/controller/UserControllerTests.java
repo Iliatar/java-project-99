@@ -64,11 +64,20 @@ public class UserControllerTests {
 
     @Test
     public void testIndex() throws Exception {
-        var result = mockMvc.perform(get("/api/users"))
+        var request = get("/api/users")
+                .with(token);
+        var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).isArray();
+    }
+
+    @Test
+    public void testIndexWithoutAuth() throws Exception {
+        var request = get("/api/users");
+        mockMvc.perform(request)
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -80,7 +89,10 @@ public class UserControllerTests {
         var lastName = user.getLastName();
         var email = user.getEmail();
 
-        var result = mockMvc.perform(get("/api/users/" + user.getId()))
+        var request = get("/api/users/" + user.getId())
+                .with(token);
+
+        var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -103,6 +115,7 @@ public class UserControllerTests {
         createDTO.setPassword(testUser.getPassword());
 
         var request = post("/api/users")
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(createDTO));
 
@@ -122,16 +135,22 @@ public class UserControllerTests {
     @Test
     public void testUpdate() throws Exception {
         var testUser = FakerTestData.getFakerUser();
+        var testUserName = testUser.getUsername();
         userRepository.save(testUser);
+
+        token = jwt().jwt(builder -> builder.subject(testUserName));
 
         var newFirstName = FakerTestData.getFakerUserFirstName();
         var newLastName = FakerTestData.getFakerUserLastName();
+        var newPassword = testUser.getPassword();
 
         var userUpdateDTO = new UserUpdateDTO();
         userUpdateDTO.setFirstName(JsonNullable.of(newFirstName));
         userUpdateDTO.setLastName(JsonNullable.of(newLastName));
+        userUpdateDTO.setPassword(JsonNullable.of(newPassword));
 
         var request = put("/api/users/" + testUser.getId())
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(userUpdateDTO));
 
@@ -155,6 +174,7 @@ public class UserControllerTests {
         userUpdateDTO.setPassword(JsonNullable.of(newPassword));
 
         var request = put("/api/users/" + testUser.getId())
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(userUpdateDTO));
 
@@ -163,11 +183,26 @@ public class UserControllerTests {
     }
 
     @Test
+    public void testDeleteWithIncorrectOwner() throws Exception {
+        var testUser = FakerTestData.getFakerUser();
+        userRepository.save(testUser);
+
+        var request = delete("/api/users/" + testUser.getId())
+                .with(token);
+
+        mockMvc.perform(request)
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     public void testDelete() throws Exception {
         var testUser = FakerTestData.getFakerUser();
         userRepository.save(testUser);
 
-        var request = delete("/api/users/" + testUser.getId());
+        token = jwt().jwt(builder -> builder.subject(testUser.getUsername()));
+
+        var request = delete("/api/users/" + testUser.getId())
+                .with(token);
 
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
@@ -185,6 +220,7 @@ public class UserControllerTests {
         createDTO.setLastName(testUser.getLastName());
 
         var request = post("/api/users")
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(createDTO));
 
@@ -194,7 +230,9 @@ public class UserControllerTests {
 
     @Test
     public void testShowWithIncorrectId() throws Exception {
-        mockMvc.perform(get("/api/users/67986846"))
+        var request = get("/api/users/67986846")
+                .with(token);
+        mockMvc.perform(request)
                 .andExpect(status().isNotFound());
     }
 }
