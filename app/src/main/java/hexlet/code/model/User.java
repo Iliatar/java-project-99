@@ -5,6 +5,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Column;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -44,6 +45,7 @@ public class User implements UserDetails {
 
     @NotNull
     @Length(min = 3)
+    @Column(name = "password")
     private String passwordDigest;
 
     @CreatedDate
