@@ -30,5 +30,4 @@ public class AuthenticationController {
         var token = jwtUtils.generateToken(authRequest.getUsername());
         return token;
     }
-
 }
