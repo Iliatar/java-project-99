@@ -1,5 +1,6 @@
 package hexlet.code.utils;
 
+import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
@@ -17,6 +18,15 @@ public class FakerTestData {
                 .supply(Select.field(User::getPasswordDigest), () -> faker.internet().password())
                 .create();
         return user;
+    }
+
+    public static TaskStatus getFakerTaskStatus() {
+        TaskStatus taskStatus = Instancio.of(TaskStatus.class)
+                .ignore(Select.field(TaskStatus::getId))
+                .supply(Select.field(TaskStatus::getName), () -> faker.southPark().characters())
+                .supply(Select.field(TaskStatus::getSlug), () -> faker.internet().slug())
+                .create();
+        return taskStatus;
     }
 
     public static String getFakerUserFirstName() {
