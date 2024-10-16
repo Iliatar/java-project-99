@@ -1,6 +1,8 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.dto.TaskStatusCreateDTO;
+import hexlet.code.dto.TaskStatusDTO;
 import hexlet.code.dto.TaskStatusUpdateDTO;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.model.TaskStatus;
@@ -78,7 +80,7 @@ public class TaskStatusControllerTests {
         TaskStatus taskStatus = FakerTestData.getFakerTaskStatus();
         taskStatusRepository.save(taskStatus);
 
-        var request = get("/api/task_statuses/" + taskStatus.getSlug())
+        var request = get("/api/task_statuses/" + taskStatus.getId())
                 .with(token);
 
         var result = mockMvc.perform(request)
@@ -95,9 +97,11 @@ public class TaskStatusControllerTests {
     @Test
     public void testCreate() throws Exception {
         var taskStatus = FakerTestData.getFakerTaskStatus();
-        var taskStatusCreateDTO = mapper.map(taskStatus);
+        var taskStatusCreateDTO = new TaskStatusCreateDTO();
+        taskStatusCreateDTO.setSlug(taskStatus.getSlug());
+        taskStatusCreateDTO.setName(taskStatus.getName());
 
-        var request = post("/api/task_statuses/")
+        var request = post("/api/task_statuses")
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(taskStatusCreateDTO));
@@ -107,7 +111,7 @@ public class TaskStatusControllerTests {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
-        var statusId = om.readValue(body, TaskStatus.class).getId();
+        var statusId = om.readValue(body, TaskStatusDTO.class).getId();
 
         var savedTask = taskStatusRepository.findById(statusId).get();
         assertThat(savedTask.getSlug()).isEqualTo(taskStatus.getSlug());
@@ -137,7 +141,7 @@ public class TaskStatusControllerTests {
         statusUpdateDTO.setName(JsonNullable.of(newTaskStatus.getName()));
         statusUpdateDTO.setSlug(JsonNullable.of(newTaskStatus.getSlug()));
 
-        var request = put("/api/task_statuses/" + taskStatus.getSlug())
+        var request = put("/api/task_statuses/" + taskStatus.getId())
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(statusUpdateDTO));
@@ -145,7 +149,7 @@ public class TaskStatusControllerTests {
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        taskStatus = taskStatusRepository.findBySlug(newTaskStatus.getSlug()).get();
+        taskStatus = taskStatusRepository.findById(taskStatus.getId()).get();
         assertThat(taskStatus.getName()).isEqualTo(newTaskStatus.getName());
     }
 
@@ -159,7 +163,7 @@ public class TaskStatusControllerTests {
         statusUpdateDTO.setName(JsonNullable.of(""));
         statusUpdateDTO.setSlug(JsonNullable.of(newTaskStatus.getSlug()));
 
-        var request = put("/api/task_statuses/" + taskStatus.getSlug())
+        var request = put("/api/task_statuses/" + taskStatus.getId())
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(statusUpdateDTO));
@@ -173,13 +177,13 @@ public class TaskStatusControllerTests {
         var taskStatus = FakerTestData.getFakerTaskStatus();
         taskStatusRepository.save(taskStatus);
 
-        var request = delete("/api/task_statuses/" + taskStatus.getSlug())
+        var request = delete("/api/task_statuses/" + taskStatus.getId())
                 .with(token);
 
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
 
-        var maybeStatus = taskStatusRepository.findBySlug(taskStatus.getSlug());
+        var maybeStatus = taskStatusRepository.findById(taskStatus.getId());
         assertThat(maybeStatus).isNotPresent();
     }
 }
