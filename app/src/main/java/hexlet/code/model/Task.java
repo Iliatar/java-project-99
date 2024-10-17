@@ -31,8 +31,10 @@ public class Task {
     private String description;
 
     @NotNull
+    @ManyToOne
     private TaskStatus taskStatus;
 
+    @ManyToOne
     private User assignee;
 
     @CreatedDate
