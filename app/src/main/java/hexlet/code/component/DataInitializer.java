@@ -4,8 +4,8 @@ import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.service.CustomUserDetailsService;
-import hexlet.code.utils.FakerTestData;
 import lombok.AllArgsConstructor;
+import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -24,8 +24,14 @@ public class DataInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        Faker faker = new Faker();
         for (int i = 0; i < TEST_USERS_COUNT_FOR_INDEX; i++) {
-            userDetailsService.createUser(FakerTestData.getFakerUser());
+            var user = new User();
+            user.setFirstName(faker.name().firstName());
+            user.setLastName(faker.name().lastName());
+            user.setEmail(faker.internet().emailAddress());
+            user.setPasswordDigest(faker.internet().password());
+            userDetailsService.createUser(user);
         }
 
         var adminUser = new User();
