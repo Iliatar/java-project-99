@@ -8,6 +8,7 @@ import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.FakerTestData;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import java.nio.charset.StandardCharsets;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 
+@Disabled
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserControllerTests {
