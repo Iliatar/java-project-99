@@ -41,6 +41,7 @@ import java.nio.charset.StandardCharsets;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TaskControllerTests {
+    private final static String DEFAULT_TASK_STATUS_SLUG = "to_review";
     private MockMvc mockMvc;
 
     @Autowired
@@ -88,7 +89,9 @@ public class TaskControllerTests {
 
     @Test
     public void testShow() throws Exception {
-        Task task = FakerTestData.getFakerTask("to_review");
+        Task task = FakerTestData.getFakerTask();
+        var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
+        task.setTaskStatus(taskStatus);
         taskRepository.save(task);
 
         var request = get("/api/tasks/" + task.getId())
@@ -109,7 +112,9 @@ public class TaskControllerTests {
 
     @Test
     public void testCreate() throws Exception {
-        Task task = FakerTestData.getFakerTask("to_review");
+        Task task = FakerTestData.getFakerTask();
+        var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
+        task.setTaskStatus(taskStatus);
         User user = FakerTestData.getFakerUser();
 
         userRepository.save(user);
@@ -145,7 +150,9 @@ public class TaskControllerTests {
 
     @Test
     public void testUnauthorizedCreate() throws Exception {
-        Task task = FakerTestData.getFakerTask("to_review");
+        Task task = FakerTestData.getFakerTask();
+        var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
+        task.setTaskStatus(taskStatus);
         User user = FakerTestData.getFakerUser();
 
         userRepository.save(user);
@@ -171,14 +178,18 @@ public class TaskControllerTests {
         User user = FakerTestData.getFakerUser();
         userRepository.save(user);
 
-        Task task = FakerTestData.getFakerTask("to_review");
+        Task task = FakerTestData.getFakerTask();
+        var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
+        task.setTaskStatus(taskStatus);
         task.setAssignee(user);
         taskRepository.save(task);
 
         user = FakerTestData.getFakerUser();
         userRepository.save(user);
 
-        Task newTask = FakerTestData.getFakerTask("to_be_fixed");
+        Task newTask = FakerTestData.getFakerTask();
+        var newTaskStatus = taskStatusRepository.findBySlug("to_be_fixed").get();
+        task.setTaskStatus(newTaskStatus);
         task.setTaskStatus(newTask.getTaskStatus());
         task.setName(newTask.getName());
         task.setDescription(newTask.getDescription());
@@ -210,7 +221,9 @@ public class TaskControllerTests {
 
     @Test
     public void testUpdateWithIncorrectData() throws Exception {
-        Task task = FakerTestData.getFakerTask("to_review");
+        Task task = FakerTestData.getFakerTask();
+        var newTaskStatus = taskStatusRepository.findBySlug("to_be_fixed").get();
+        task.setTaskStatus(newTaskStatus);
         taskRepository.save(task);
 
         task.setTaskStatus(null);
@@ -229,7 +242,9 @@ public class TaskControllerTests {
 
     @Test
     public void testDelete() throws Exception {
-        Task task = FakerTestData.getFakerTask("to_review");
+        Task task = FakerTestData.getFakerTask();
+        var newTaskStatus = taskStatusRepository.findBySlug("to_be_fixed").get();
+        task.setTaskStatus(newTaskStatus);
         taskRepository.save(task);
 
         var request = delete("/api/tasks/" + task.getId())
@@ -247,7 +262,9 @@ public class TaskControllerTests {
         User user = FakerTestData.getFakerUser();
         userRepository.save(user);
 
-        Task task = FakerTestData.getFakerTask("to_review");
+        Task task = FakerTestData.getFakerTask();
+        var newTaskStatus = taskStatusRepository.findBySlug("to_be_fixed").get();
+        task.setTaskStatus(newTaskStatus);
         task.setAssignee(user);
         taskRepository.save(task);
 
@@ -261,12 +278,13 @@ public class TaskControllerTests {
     @Test
     public void testTaskStatusDelete() throws Exception {
         var statusSlug = "to_review";
-        var statusId = taskStatusRepository.findBySlug(statusSlug).get().getId();
+        var status = taskStatusRepository.findBySlug(statusSlug).get();
 
-        Task task = FakerTestData.getFakerTask(statusSlug);
+        Task task = FakerTestData.getFakerTask();
+        task.setTaskStatus(status);
         taskRepository.save(task);
 
-        var request = delete("/api/task_statuses/" + statusId)
+        var request = delete("/api/task_statuses/" + status.getId())
                 .with(token);
 
         mockMvc.perform(request)

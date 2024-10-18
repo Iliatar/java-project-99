@@ -10,10 +10,7 @@ import org.instancio.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
 public class FakerTestData {
-    @Autowired
-    private static TaskStatusRepository taskStatusRepository;
 
     private static Faker faker = new Faker();
     public static User getFakerUser() {
@@ -36,12 +33,10 @@ public class FakerTestData {
         return taskStatus;
     }
 
-    public static Task getFakerTask(String taskStatusSlug) {
-        TaskStatus taskStatus = taskStatusRepository.findBySlug(taskStatusSlug).get();
+    public static Task getFakerTask() {
 
         Task task = Instancio.of(Task.class)
                 .ignore(Select.field(Task::getId))
-                .supply(Select.field(Task::getTaskStatus), () -> taskStatus)
                 .supply(Select.field(Task::getIndex), () -> faker.number().numberBetween(1,50))
                 .supply(Select.field(Task::getName), () -> faker.lorem().words(3))
                 .supply(Select.field(Task::getDescription), () -> faker.lorem().paragraph(10))
