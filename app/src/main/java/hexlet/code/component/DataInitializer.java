@@ -47,24 +47,24 @@ public class DataInitializer implements ApplicationRunner {
         taskStatus.setSlug("draft");
         taskStatusRepository.save(taskStatus);
 
-        taskStatus = new TaskStatus();
-        taskStatus.setName("На проверке");
-        taskStatus.setSlug("to_review");
-        taskStatusRepository.save(taskStatus);
+        TaskStatus taskStatus1 = new TaskStatus();
+        taskStatus1.setName("На проверке");
+        taskStatus1.setSlug("to_review");
+        taskStatusRepository.save(taskStatus1);
 
-        taskStatus = new TaskStatus();
-        taskStatus.setName("На исправлении");
-        taskStatus.setSlug("to_be_fixed");
-        taskStatusRepository.save(taskStatus);
+        TaskStatus taskStatus2 = new TaskStatus();
+        taskStatus2.setName("На исправлении");
+        taskStatus2.setSlug("to_be_fixed");
+        taskStatusRepository.save(taskStatus2);
 
-        taskStatus = new TaskStatus();
-        taskStatus.setName("Готово к выпуску");
-        taskStatus.setSlug("to_publish");
-        taskStatusRepository.save(taskStatus);
+        TaskStatus taskStatus3 = new TaskStatus();
+        taskStatus3.setName("Готово к выпуску");
+        taskStatus3.setSlug("to_publish");
+        taskStatusRepository.save(taskStatus3);
 
-        taskStatus = new TaskStatus();
-        taskStatus.setName("Выпущено");
-        taskStatus.setSlug("published");
-        taskStatusRepository.save(taskStatus);
+        TaskStatus taskStatus4 = new TaskStatus();
+        taskStatus4.setName("Выпущено");
+        taskStatus4.setSlug("published");
+        taskStatusRepository.save(taskStatus4);
     }
 }

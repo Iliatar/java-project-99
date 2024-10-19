@@ -55,7 +55,10 @@ public class TaskController {
     @PostMapping(path = "")
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDTO create(@RequestBody @Valid TaskCreateDTO createDTO) {
+        System.out.println("task status slug in createDTO:" + createDTO.getStatus());
         var model = taskMapper.map(createDTO);
+        System.out.println("task status slug in model:" + model.getTaskStatus().getSlug());
+        System.out.println("task status id in model:" + model.getTaskStatus().getId());
         taskRepository.save(model);
         var dto = taskMapper.map(model);
         return dto;

@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.sql.SQLException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -16,6 +18,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<String> handleConstrainViolationException(ConstraintViolationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<String> handleConstrainViolationException(SQLException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 }

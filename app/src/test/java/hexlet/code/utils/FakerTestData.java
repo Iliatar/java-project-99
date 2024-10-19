@@ -37,9 +37,11 @@ public class FakerTestData {
 
         Task task = Instancio.of(Task.class)
                 .ignore(Select.field(Task::getId))
+                .ignore(Select.field(Task::getAssignee))
+                .ignore(Select.field(Task::getTaskStatus))
                 .supply(Select.field(Task::getIndex), () -> faker.number().numberBetween(1,50))
-                .supply(Select.field(Task::getName), () -> faker.lorem().words(3))
-                .supply(Select.field(Task::getDescription), () -> faker.lorem().paragraph(10))
+                .supply(Select.field(Task::getName), () -> faker.lorem().sentence(2, 3))
+                .supply(Select.field(Task::getDescription), () -> faker.lorem().paragraph(2))
                 .create();
         return task;
     }

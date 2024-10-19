@@ -2,6 +2,7 @@ package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.TaskCreateDTO;
+import hexlet.code.dto.TaskDTO;
 import hexlet.code.dto.TaskStatusDTO;
 import hexlet.code.dto.TaskUpdateDTO;
 import hexlet.code.mapper.TaskMapper;
@@ -41,7 +42,7 @@ import java.nio.charset.StandardCharsets;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TaskControllerTests {
-    private final static String DEFAULT_TASK_STATUS_SLUG = "to_review";
+    private final static String DEFAULT_TASK_STATUS_SLUG = "draft";
     private MockMvc mockMvc;
 
     @Autowired
@@ -105,8 +106,8 @@ public class TaskControllerTests {
                 a -> a.node("title").isEqualTo(task.getName()),
                 a -> a.node("content").isEqualTo(task.getDescription()),
                 a -> a.node("index").isEqualTo(task.getIndex()),
-                a -> a.node("status").isEqualTo(task.getTaskStatus()),
-                a -> a.node("assignee_id").isNull()
+                a -> a.node("status").isEqualTo(task.getTaskStatus().getSlug()),
+                a -> a.node("assignee_id").isAbsent()
         );
     }
 
@@ -137,7 +138,7 @@ public class TaskControllerTests {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
-        var taskId = om.readValue(body, Task.class).getId();
+        var taskId = om.readValue(body, TaskDTO.class).getId();
 
         Task savedTask = taskRepository.findById(taskId).get();
 
@@ -190,7 +191,7 @@ public class TaskControllerTests {
         Task newTask = FakerTestData.getFakerTask();
         var newTaskStatus = taskStatusRepository.findBySlug("to_be_fixed").get();
         task.setTaskStatus(newTaskStatus);
-        task.setTaskStatus(newTask.getTaskStatus());
+        task.setTaskStatus(newTaskStatus);
         task.setName(newTask.getName());
         task.setDescription(newTask.getDescription());
         task.setIndex(newTask.getIndex());
@@ -226,10 +227,8 @@ public class TaskControllerTests {
         task.setTaskStatus(newTaskStatus);
         taskRepository.save(task);
 
-        task.setTaskStatus(null);
-
         var updateDTO = new TaskUpdateDTO();
-        updateDTO.setStatus(JsonNullable.of(task.getTaskStatus().getSlug()));
+        updateDTO.setStatus(JsonNullable.of(null));
 
         var request = put("/api/tasks/" + task.getId())
                 .with(token)
@@ -243,7 +242,7 @@ public class TaskControllerTests {
     @Test
     public void testDelete() throws Exception {
         Task task = FakerTestData.getFakerTask();
-        var newTaskStatus = taskStatusRepository.findBySlug("to_be_fixed").get();
+        var newTaskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
         task.setTaskStatus(newTaskStatus);
         taskRepository.save(task);
 
@@ -262,8 +261,10 @@ public class TaskControllerTests {
         User user = FakerTestData.getFakerUser();
         userRepository.save(user);
 
+        token = jwt().jwt(builder -> builder.subject(user.getUsername()));
+
         Task task = FakerTestData.getFakerTask();
-        var newTaskStatus = taskStatusRepository.findBySlug("to_be_fixed").get();
+        var newTaskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
         task.setTaskStatus(newTaskStatus);
         task.setAssignee(user);
         taskRepository.save(task);
