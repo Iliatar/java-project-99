@@ -3,7 +3,6 @@ package hexlet.code.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.TaskCreateDTO;
 import hexlet.code.dto.TaskDTO;
-import hexlet.code.dto.TaskStatusDTO;
 import hexlet.code.dto.TaskUpdateDTO;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.model.Task;
@@ -42,7 +41,7 @@ import java.nio.charset.StandardCharsets;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TaskControllerTests {
-    private final static String DEFAULT_TASK_STATUS_SLUG = "draft";
+    private static final String DEFAULT_TASK_STATUS_SLUG = "draft";
     private MockMvc mockMvc;
 
     @Autowired
@@ -125,7 +124,7 @@ public class TaskControllerTests {
         createDTO.setIndex(task.getIndex());
         createDTO.setContent(task.getDescription());
         createDTO.setTitle(task.getName());
-        createDTO.setAssignee_id(task.getAssignee().getId());
+        createDTO.setAssigneeId(task.getAssignee().getId());
         createDTO.setStatus(task.getTaskStatus().getSlug());
 
         var request = post("/api/tasks")
@@ -163,7 +162,7 @@ public class TaskControllerTests {
         createDTO.setIndex(task.getIndex());
         createDTO.setContent(task.getDescription());
         createDTO.setTitle(task.getName());
-        createDTO.setAssignee_id(task.getAssignee().getId());
+        createDTO.setAssigneeId(task.getAssignee().getId());
         createDTO.setStatus(task.getTaskStatus().getSlug());
 
         var request = post("/api/tasks")
@@ -198,7 +197,7 @@ public class TaskControllerTests {
         task.setAssignee(user);
 
         var updateDTO = new TaskUpdateDTO();
-        updateDTO.setAssignee_id(JsonNullable.of(task.getAssignee().getId()));
+        updateDTO.setAssigneeId(JsonNullable.of(task.getAssignee().getId()));
         updateDTO.setStatus(JsonNullable.of(task.getTaskStatus().getSlug()));
         updateDTO.setTitle(JsonNullable.of(task.getName()));
         updateDTO.setContent(JsonNullable.of(task.getDescription()));
@@ -257,7 +256,7 @@ public class TaskControllerTests {
     }
 
     @Test
-    public void testUserDelete() throws Exception{
+    public void testUserDelete() throws Exception {
         User user = FakerTestData.getFakerUser();
         userRepository.save(user);
 
