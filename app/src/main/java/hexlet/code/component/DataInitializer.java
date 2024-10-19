@@ -11,6 +11,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
 @AllArgsConstructor
 public class DataInitializer implements ApplicationRunner {
@@ -42,29 +45,18 @@ public class DataInitializer implements ApplicationRunner {
 
         userDetailsService.createUser(adminUser);
 
-        TaskStatus taskStatus = new TaskStatus();
-        taskStatus.setName("Черновик");
-        taskStatus.setSlug("draft");
-        taskStatusRepository.save(taskStatus);
+        Map<String, String> statusMap = new HashMap<>();
+        statusMap.put("draft", "Черновик");
+        statusMap.put("to_review", "На проверке");
+        statusMap.put("to_be_fixed", "На исправлении");
+        statusMap.put("to_publish", "Готово к выпуску");
+        statusMap.put("published", "Выпущено");
 
-        TaskStatus taskStatus1 = new TaskStatus();
-        taskStatus1.setName("На проверке");
-        taskStatus1.setSlug("to_review");
-        taskStatusRepository.save(taskStatus1);
-
-        TaskStatus taskStatus2 = new TaskStatus();
-        taskStatus2.setName("На исправлении");
-        taskStatus2.setSlug("to_be_fixed");
-        taskStatusRepository.save(taskStatus2);
-
-        TaskStatus taskStatus3 = new TaskStatus();
-        taskStatus3.setName("Готово к выпуску");
-        taskStatus3.setSlug("to_publish");
-        taskStatusRepository.save(taskStatus3);
-
-        TaskStatus taskStatus4 = new TaskStatus();
-        taskStatus4.setName("Выпущено");
-        taskStatus4.setSlug("published");
-        taskStatusRepository.save(taskStatus4);
+        for (Map.Entry<String, String> entry : statusMap.entrySet()) {
+            TaskStatus taskStatus = new TaskStatus();
+            taskStatus.setSlug(entry.getKey());
+            taskStatus.setName(entry.getValue());
+            taskStatusRepository.save(taskStatus);
+        }
     }
 }
