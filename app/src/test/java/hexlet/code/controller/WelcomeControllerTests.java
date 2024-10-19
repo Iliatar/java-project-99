@@ -14,7 +14,6 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import java.nio.charset.StandardCharsets;
 
-@Disabled
 @SpringBootTest
 @AutoConfigureMockMvc
 public class WelcomeControllerTests {

@@ -33,7 +33,6 @@ import java.nio.charset.StandardCharsets;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 
-@Disabled
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserControllerTests {
