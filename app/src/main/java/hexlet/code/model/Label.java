@@ -27,6 +27,7 @@ public class Label {
 
     @ToString.Include
     @Length(min = 3, max = 1000)
+    @Column(unique = true)
     private String name;
 
     @CreatedDate
