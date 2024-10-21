@@ -1,5 +1,6 @@
 package hexlet.code.utils;
 
+import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
@@ -41,6 +42,15 @@ public class FakerTestData {
                 .supply(Select.field(Task::getDescription), () -> faker.lorem().paragraph(2))
                 .create();
         return task;
+    }
+
+    public static Label getFakerLabel() {
+        Label label = Instancio.of(Label.class)
+                .ignore(Select.field(Label::getId))
+                .ignore(Select.field(Label::getCreatedAt))
+                .supply(Select.field(Label::getName), () -> faker.name().nameWithMiddle())
+                .create();
+        return label;
     }
 
     public static String getFakerUserFirstName() {

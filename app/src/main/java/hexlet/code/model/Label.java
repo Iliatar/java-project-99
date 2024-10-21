@@ -31,5 +31,5 @@ public class Label {
     private String name;
 
     @CreatedDate
-    private LocalDate created_at;
+    private LocalDate createdAt;
 }

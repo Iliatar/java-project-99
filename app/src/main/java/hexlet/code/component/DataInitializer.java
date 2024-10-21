@@ -1,7 +1,9 @@
 package hexlet.code.component;
 
+import hexlet.code.model.Label;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.service.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,9 @@ public class DataInitializer implements ApplicationRunner {
 
     @Autowired
     private TaskStatusRepository taskStatusRepository;
+
+    @Autowired
+    private LabelRepository labelRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -57,6 +62,14 @@ public class DataInitializer implements ApplicationRunner {
             taskStatus.setSlug(entry.getKey());
             taskStatus.setName(entry.getValue());
             taskStatusRepository.save(taskStatus);
+        }
+
+        String[] labelNames = {"feature", "bug"};
+
+        for (String labelName : labelNames) {
+            Label label = new Label();
+            label.setName(labelName);
+            labelRepository.save(label);
         }
     }
 }
