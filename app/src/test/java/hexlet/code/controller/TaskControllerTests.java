@@ -7,6 +7,7 @@ import hexlet.code.dto.TaskUpdateDTO;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.model.Task;
 import hexlet.code.model.User;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
@@ -23,6 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
@@ -38,11 +40,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.openapitools.jackson.nullable.JsonNullable;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TaskControllerTests {
     private static final String DEFAULT_TASK_STATUS_SLUG = "draft";
+    private static final String DEFAULT_LABEL_NAME = "feature";
+    private static final String SECONDARY_LABEL_NAME = "bug";
     private MockMvc mockMvc;
 
     @Autowired
@@ -62,6 +67,9 @@ public class TaskControllerTests {
 
     @Autowired
     private TaskStatusRepository taskStatusRepository;
+
+    @Autowired
+    private LabelRepository labelRepository;
 
 
     private JwtRequestPostProcessor token;
@@ -93,6 +101,8 @@ public class TaskControllerTests {
         Task task = FakerTestData.getFakerTask();
         var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
         task.setTaskStatus(taskStatus);
+        var label = labelRepository.findByName(DEFAULT_LABEL_NAME).get();
+        task.setLabels(Set.of(label));
         taskRepository.save(task);
 
         var request = get("/api/tasks/" + task.getId())
@@ -107,17 +117,22 @@ public class TaskControllerTests {
                 a -> a.node("content").isEqualTo(task.getDescription()),
                 a -> a.node("index").isEqualTo(task.getIndex()),
                 a -> a.node("status").isEqualTo(task.getTaskStatus().getSlug()),
-                a -> a.node("assignee_id").isAbsent()
+                a -> a.node("assignee_id").isAbsent(),
+                a -> a.node("taskLabelIds").isArray()
         );
     }
 
     @Test
     public void testCreate() throws Exception {
         Task task = FakerTestData.getFakerTask();
+
         var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
         task.setTaskStatus(taskStatus);
-        User user = FakerTestData.getFakerUser();
 
+        var label = labelRepository.findByName(DEFAULT_LABEL_NAME).get();
+        task.setLabels(Set.of(label));
+
+        User user = FakerTestData.getFakerUser();
         userRepository.save(user);
         task.setAssignee(user);
 
@@ -127,6 +142,7 @@ public class TaskControllerTests {
         createDTO.setTitle(task.getName());
         createDTO.setAssigneeId(task.getAssignee().getId());
         createDTO.setStatus(task.getTaskStatus().getSlug());
+        createDTO.setTaskLabelIds(Set.of(label.getId()));
 
         var request = post("/api/tasks")
                 .with(token)
@@ -147,6 +163,7 @@ public class TaskControllerTests {
         assertThat(savedTask.getDescription()).isEqualTo(task.getDescription());
         assertThat(savedTask.getTaskStatus()).isEqualTo(task.getTaskStatus());
         assertThat(savedTask.getAssignee()).isEqualTo(task.getAssignee());
+        assertThat(savedTask.getLabels()).isEqualTo(task.getLabels());
     }
 
     @Test
@@ -154,8 +171,8 @@ public class TaskControllerTests {
         Task task = FakerTestData.getFakerTask();
         var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
         task.setTaskStatus(taskStatus);
-        User user = FakerTestData.getFakerUser();
 
+        User user = FakerTestData.getFakerUser();
         userRepository.save(user);
         task.setAssignee(user);
 
@@ -176,17 +193,25 @@ public class TaskControllerTests {
 
     @Test
     public void testUpdate() throws Exception {
-        User user = FakerTestData.getFakerUser();
-        userRepository.save(user);
 
         Task task = FakerTestData.getFakerTask();
+
         var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
         task.setTaskStatus(taskStatus);
+
+        User user = FakerTestData.getFakerUser();
+        userRepository.save(user);
         task.setAssignee(user);
+
+        var label = labelRepository.findByName(DEFAULT_LABEL_NAME).get();
+        task.setLabels(Set.of(label));
+
         taskRepository.save(task);
 
         user = FakerTestData.getFakerUser();
         userRepository.save(user);
+
+        var secondLabel = labelRepository.findByName(SECONDARY_LABEL_NAME).get();
 
         Task newTask = FakerTestData.getFakerTask();
         var newTaskStatus = taskStatusRepository.findBySlug("to_be_fixed").get();
@@ -196,6 +221,7 @@ public class TaskControllerTests {
         task.setDescription(newTask.getDescription());
         task.setIndex(newTask.getIndex());
         task.setAssignee(user);
+        task.setLabels(Set.of(label, secondLabel));
 
         var updateDTO = new TaskUpdateDTO();
         updateDTO.setAssigneeId(JsonNullable.of(task.getAssignee().getId()));
@@ -203,6 +229,7 @@ public class TaskControllerTests {
         updateDTO.setTitle(JsonNullable.of(task.getName()));
         updateDTO.setContent(JsonNullable.of(task.getDescription()));
         updateDTO.setIndex(JsonNullable.of(task.getIndex()));
+        updateDTO.setTaskLabelIds(JsonNullable.of(Set.of(label.getId(), secondLabel.getId())));
 
         var request = put("/api/tasks/" + task.getId())
                 .with(token)
@@ -218,6 +245,7 @@ public class TaskControllerTests {
         assertThat(savedTask.getName()).isEqualTo(task.getName());
         assertThat(savedTask.getDescription()).isEqualTo(task.getDescription());
         assertThat(savedTask.getAssignee()).isEqualTo(task.getAssignee());
+        assertThat(savedTask.getLabels()).isEqualTo(task.getLabels());
     }
 
     @Test

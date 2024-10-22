@@ -37,6 +37,7 @@ public class FakerTestData {
                 .ignore(Select.field(Task::getId))
                 .ignore(Select.field(Task::getAssignee))
                 .ignore(Select.field(Task::getTaskStatus))
+                .ignore(Select.field(Task::getLabels))
                 .supply(Select.field(Task::getIndex), () -> faker.number().numberBetween(1, 50))
                 .supply(Select.field(Task::getName), () -> faker.lorem().sentence(2, 3))
                 .supply(Select.field(Task::getDescription), () -> faker.lorem().paragraph(2))
