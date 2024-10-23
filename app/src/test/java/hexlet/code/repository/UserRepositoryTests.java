@@ -1,7 +1,6 @@
 package hexlet.code.repository;
 
 import hexlet.code.utils.FakerTestData;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

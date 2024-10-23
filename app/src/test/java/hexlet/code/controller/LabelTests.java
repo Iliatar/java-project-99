@@ -1,15 +1,12 @@
 package hexlet.code.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.dto.*;
+import hexlet.code.dto.LabelDTO;
+import hexlet.code.dto.LabelUpdateDTO;
+import hexlet.code.dto.LabelCreateDTO;
 import hexlet.code.mapper.LabelMapper;
-import hexlet.code.mapper.TaskMapper;
 import hexlet.code.model.Label;
-import hexlet.code.model.Task;
-import hexlet.code.model.User;
 import hexlet.code.repository.LabelRepository;
-import hexlet.code.repository.TaskStatusRepository;
-import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.FakerTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +26,10 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -107,7 +107,7 @@ public class LabelTests {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
-        var labelId = om.readValue(body, TaskDTO.class).getId();
+        var labelId = om.readValue(body, LabelDTO.class).getId();
 
         Label savedLabel = labelRepository.findById(labelId).get();
 
