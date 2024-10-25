@@ -2,23 +2,18 @@ package hexlet.code.controller;
 
 import hexlet.code.dto.TaskDTO;
 import hexlet.code.dto.TaskCreateDTO;
+import hexlet.code.dto.TaskParamsDTO;
 import hexlet.code.dto.TaskUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.repository.TaskRepository;
+import hexlet.code.specification.TaskSpecification;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,9 +26,13 @@ public class TaskController {
     @Autowired
     private TaskMapper taskMapper;
 
+    @Autowired
+    private TaskSpecification specBuilder;
+
     @GetMapping(path = "")
-    public ResponseEntity<List<TaskDTO>> index() {
-        var statusList = taskRepository.findAll()
+    public ResponseEntity<List<TaskDTO>> index(TaskParamsDTO paramsDTO) {
+        var spec = specBuilder.build(paramsDTO);
+        var statusList = taskRepository.findAll(spec)
                 .stream()
                 .map(taskMapper::map)
                 .toList();
