@@ -90,8 +90,38 @@ public class TaskControllerTests {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
+        assertThatJson(body).isArray()
+                .hasSize(taskRepository.findAll().size());
+    }
 
-        assertThatJson(body).isArray();
+    @Test
+    public void testFilterIndex() throws Exception {
+        Task task = FakerTestData.getFakerTask();
+
+        var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
+        task.setTaskStatus(taskStatus);
+
+        User user = FakerTestData.getFakerUser();
+        userRepository.save(user);
+        task.setAssignee(user);
+
+        var label = labelRepository.findByName(DEFAULT_LABEL_NAME).get();
+        task.setLabels(Set.of(label));
+
+        taskRepository.save(task);
+
+        var request = get("/api/tasks?titleCont=" + task.getName())
+                .with(token);
+
+        var result = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+        System.out.println(body);
+        assertThatJson(body)
+                .isArray()
+                .hasSize(1);
     }
 
     @Test
