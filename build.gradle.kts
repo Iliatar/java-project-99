@@ -69,13 +69,15 @@ application { mainClass.set("hexlet.code.AppApplication") }
 
 tasks.jacocoTestReport { reports { xml.required.set(true) } }
 
-sentry {
-	// Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
-	// This enables source context, allowing you to see your source
-	// code as part of your stack traces in Sentry.
-	includeSourceContext = true
+if (System.getenv("APP_ENV") == "production") {
+	sentry {
+		// Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
+		// This enables source context, allowing you to see your source
+		// code as part of your stack traces in Sentry.
+		includeSourceContext = true
 
-	org = "techcode"
-	projectName = "java-spring-boot"
-	authToken = System.getenv("SENTRY_AUTH_TOKEN")
+		org = "techcode"
+		projectName = "java-spring-boot"
+		authToken = System.getenv("SENTRY_AUTH_TOKEN")
+	}
 }
