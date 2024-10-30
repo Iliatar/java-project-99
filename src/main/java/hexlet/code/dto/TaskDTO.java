@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
 import java.util.Set;
 
 @Getter
@@ -12,7 +11,7 @@ import java.util.Set;
 public class TaskDTO {
     private Long id;
     private Long index;
-    private Date createdAt;
+    private String createdAt;
     @JsonProperty("assignee_id")
     private Long assigneeId;
     private String title;
