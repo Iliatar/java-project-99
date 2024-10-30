@@ -15,6 +15,10 @@ import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+
 @Mapper (
         uses = { JsonNullableMapper.class },
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
@@ -45,5 +49,9 @@ public abstract class UserMapper {
 
         var password = passwordEncoder.encode(jsonNullable.get());
         updateDTO.setPassword(JsonNullable.of(password));
+    }
+
+    public Date toDate(LocalDate createdAt) {
+        return java.util.Date.from(createdAt.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
 }
