@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(
-        uses = {JsonNullableMapper.class, ReferenceMapper.class},
+        uses = {JsonNullableMapper.class, ReferenceMapper.class, DateMapper.class},
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING,
         unmappedTargetPolicy = ReportingPolicy.IGNORE
