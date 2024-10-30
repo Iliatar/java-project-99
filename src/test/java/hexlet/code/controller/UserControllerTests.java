@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.UserCreateDTO;
 import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
+import hexlet.code.mapper.DateMapper;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.FakerTestData;
@@ -40,6 +41,9 @@ public class UserControllerTests {
 
     @Autowired
     private ObjectMapper om;
+
+    @Autowired
+    private DateMapper dateMapper;
 
     @Autowired
     UserRepository userRepository;
@@ -88,6 +92,7 @@ public class UserControllerTests {
         var firstName = user.getFirstName();
         var lastName = user.getLastName();
         var email = user.getEmail();
+        var createdAt = user.getCreatedAt();
 
         var request = get("/api/users/" + user.getId())
                 .with(token);
@@ -101,7 +106,8 @@ public class UserControllerTests {
         assertThatJson(body).and(
             a -> a.node("firstName").isEqualTo(firstName),
             a -> a.node("lastName").isEqualTo(lastName),
-            a -> a.node("email").isEqualTo(email)
+            a -> a.node("email").isEqualTo(email),
+            a -> a.node("createdAt").isEqualTo(dateMapper.toString(createdAt))
         );
     }
 
