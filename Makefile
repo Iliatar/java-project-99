@@ -15,3 +15,12 @@ report:
 	./gradlew jacocoTestReport
 
 .PHONY: build
+
+setup:
+	./gradlew wrapper --gradle-version 8.6
+
+install:
+	./gradlew installDist
+
+start:
+	./gradlew bootRun --args='--spring.profiles.active=dev'
