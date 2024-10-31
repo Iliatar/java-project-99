@@ -329,7 +329,7 @@ public class TaskControllerTests {
                 .with(token);
 
         mockMvc.perform(request)
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isMethodNotAllowed());
     }
 
     @Test
@@ -345,6 +345,6 @@ public class TaskControllerTests {
                 .with(token);
 
         mockMvc.perform(request)
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isMethodNotAllowed());
     }
 }
