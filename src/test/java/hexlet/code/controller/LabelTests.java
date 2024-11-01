@@ -119,7 +119,7 @@ public class LabelTests {
         var body = result.getResponse().getContentAsString();
         var labelId = om.readValue(body, LabelDTO.class).getId();
 
-        Label savedLabel = labelRepository.findById(labelId).get();
+        Label savedLabel = labelRepository.findById(labelId).orElse(null);
 
         assertThat(savedLabel.getName()).isEqualTo(label.getName());
     }
@@ -158,7 +158,7 @@ public class LabelTests {
         mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        var savedLabel = labelRepository.findById(label.getId()).get();
+        var savedLabel = labelRepository.findById(label.getId()).orElse(null);
         assertThat(savedLabel.getName()).isEqualTo(label.getName());
     }
 

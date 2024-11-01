@@ -39,7 +39,7 @@ public class UserRepositoryTests {
         assertThat(repository.count()).isEqualTo(++recordsCount);
 
         Long id = testUser.getId();
-        testUser = repository.findById(id).get();
+        testUser = repository.findById(id).orElse(null);
 
         assertThat(testUser.getFirstName()).isEqualTo(firstName);
         assertThat(testUser.getLastName()).isEqualTo(lastName);
@@ -53,7 +53,7 @@ public class UserRepositoryTests {
         testUser.setLastName(newLastName);
         repository.save(testUser);
 
-        testUser = repository.findById(testUser.getId()).get();
+        testUser = repository.findById(testUser.getId()).orElse(null);
         assertThat(testUser.getFirstName()).isEqualTo(newName);
         assertThat(testUser.getLastName()).isEqualTo(newLastName);
 

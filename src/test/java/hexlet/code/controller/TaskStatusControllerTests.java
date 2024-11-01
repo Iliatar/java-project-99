@@ -124,7 +124,7 @@ public class TaskStatusControllerTests {
         var body = result.getResponse().getContentAsString();
         var statusId = om.readValue(body, TaskStatusDTO.class).getId();
 
-        var savedTask = taskStatusRepository.findById(statusId).get();
+        var savedTask = taskStatusRepository.findById(statusId).orElse(null);
         assertThat(savedTask.getSlug()).isEqualTo(taskStatus.getSlug());
         assertThat(savedTask.getName()).isEqualTo(taskStatus.getName());
     }
@@ -160,7 +160,7 @@ public class TaskStatusControllerTests {
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        taskStatus = taskStatusRepository.findById(taskStatus.getId()).get();
+        taskStatus = taskStatusRepository.findById(taskStatus.getId()).orElse(null);
         assertThat(taskStatus.getName()).isEqualTo(newTaskStatus.getName());
     }
 

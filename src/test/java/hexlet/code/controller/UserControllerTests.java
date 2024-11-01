@@ -144,7 +144,7 @@ public class UserControllerTests {
         var body = result.getResponse().getContentAsString();
         var userId = om.readValue(body, UserDTO.class).getId();
 
-        var savedUser = userRepository.findById(userId).get();
+        var savedUser = userRepository.findById(userId).orElse(null);
         assertThat(savedUser.getFirstName()).isEqualTo(testUser.getFirstName());
         assertThat(savedUser.getLastName()).isEqualTo(testUser.getLastName());
         assertThat(savedUser.getEmail()).isEqualTo(testUser.getEmail());
@@ -175,7 +175,7 @@ public class UserControllerTests {
         mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        testUser = userRepository.findById(testUser.getId()).get();
+        testUser = userRepository.findById(testUser.getId()).orElse(null);
 
         assertThat(testUser.getFirstName()).isEqualTo(newFirstName);
         assertThat(testUser.getLastName()).isEqualTo(newLastName);
