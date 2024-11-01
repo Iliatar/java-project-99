@@ -24,6 +24,9 @@ public class AuthenticationControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
+    private FakerTestData fakerTestData;
+
+    @Autowired
     private ObjectMapper om;
 
     @Autowired
@@ -40,7 +43,7 @@ public class AuthenticationControllerTests {
 
     @Test
     public void testLogin() throws Exception {
-        var testUser = FakerTestData.getFakerUser();
+        var testUser = fakerTestData.getFakerUser();
         userDetailsService.createUser(testUser);
 
         AuthRequest requestDTO = new AuthRequest();

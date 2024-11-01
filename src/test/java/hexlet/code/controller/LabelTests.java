@@ -41,6 +41,9 @@ public class LabelTests {
     private LabelRepository labelRepository;
 
     @Autowired
+    private FakerTestData fakerTestData;
+
+    @Autowired
     private LabelMapper labelMapper;
 
     @Autowired
@@ -75,7 +78,7 @@ public class LabelTests {
 
     @Test
     public void testShow() throws Exception {
-        Label label = FakerTestData.getFakerLabel();
+        Label label = fakerTestData.getFakerLabel();
         labelRepository.save(label);
 
         var request = get("/api/labels/" + label.getId())
@@ -92,7 +95,7 @@ public class LabelTests {
 
     @Test
     public void testCreate() throws Exception {
-        Label label = FakerTestData.getFakerLabel();
+        Label label = fakerTestData.getFakerLabel();
 
         LabelCreateDTO createDTO = new LabelCreateDTO();
         createDTO.setName(label.getName());
@@ -116,7 +119,7 @@ public class LabelTests {
 
     @Test
     public void testUnauthorizedCreate() throws Exception {
-        Label label = FakerTestData.getFakerLabel();
+        Label label = fakerTestData.getFakerLabel();
 
         LabelCreateDTO createDTO = new LabelCreateDTO();
         createDTO.setName(label.getName());
@@ -131,10 +134,10 @@ public class LabelTests {
 
     @Test
     public void testUpdate() throws Exception {
-        Label label = FakerTestData.getFakerLabel();
+        Label label = fakerTestData.getFakerLabel();
         labelRepository.save(label);
 
-        Label newLabel = FakerTestData.getFakerLabel();
+        Label newLabel = fakerTestData.getFakerLabel();
         label.setName(newLabel.getName());
 
         var updateDTO = new LabelUpdateDTO();
@@ -154,7 +157,7 @@ public class LabelTests {
 
     @Test
     public void testUpdateWithIncorrectData() throws Exception {
-        Label label = FakerTestData.getFakerLabel();
+        Label label = fakerTestData.getFakerLabel();
         labelRepository.save(label);
 
         var updateDTO = new LabelUpdateDTO();
@@ -171,7 +174,7 @@ public class LabelTests {
 
     @Test
     public void testDelete() throws Exception {
-        Label label = FakerTestData.getFakerLabel();
+        Label label = fakerTestData.getFakerLabel();
         labelRepository.save(label);
 
         var request = delete("/api/labels/" + label.getId())

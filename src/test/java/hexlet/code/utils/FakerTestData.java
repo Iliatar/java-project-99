@@ -7,11 +7,12 @@ import hexlet.code.model.User;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
 import org.instancio.Select;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FakerTestData {
-
-    private static Faker faker = new Faker();
-    public static User getFakerUser() {
+    private final Faker faker = new Faker();
+    public User getFakerUser() {
         User user = Instancio.of(User.class)
                 .ignore(Select.field(User::getId))
                 .supply(Select.field(User::getFirstName), () -> faker.name().firstName())
@@ -22,7 +23,7 @@ public class FakerTestData {
         return user;
     }
 
-    public static TaskStatus getFakerTaskStatus() {
+    public TaskStatus getFakerTaskStatus() {
         TaskStatus taskStatus = Instancio.of(TaskStatus.class)
                 .ignore(Select.field(TaskStatus::getId))
                 .supply(Select.field(TaskStatus::getName), () -> faker.name().lastName())
@@ -31,7 +32,7 @@ public class FakerTestData {
         return taskStatus;
     }
 
-    public static Task getFakerTask() {
+    public Task getFakerTask() {
 
         Task task = Instancio.of(Task.class)
                 .ignore(Select.field(Task::getId))
@@ -45,7 +46,7 @@ public class FakerTestData {
         return task;
     }
 
-    public static Label getFakerLabel() {
+    public Label getFakerLabel() {
         Label label = Instancio.of(Label.class)
                 .ignore(Select.field(Label::getId))
                 .ignore(Select.field(Label::getCreatedAt))
@@ -54,10 +55,10 @@ public class FakerTestData {
         return label;
     }
 
-    public static String getFakerUserFirstName() {
+    public String getFakerUserFirstName() {
         return faker.name().firstName();
     }
-    public static String getFakerUserLastName() {
+    public String getFakerUserLastName() {
         return faker.name().lastName();
     }
 }

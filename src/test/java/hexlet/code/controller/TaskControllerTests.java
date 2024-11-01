@@ -52,6 +52,9 @@ public class TaskControllerTests {
     private TaskRepository taskRepository;
 
     @Autowired
+    private FakerTestData fakerTestData;
+
+    @Autowired
     private TaskMapper taskMapper;
 
     @Autowired
@@ -96,12 +99,12 @@ public class TaskControllerTests {
 
     @Test
     public void testFilterIndex() throws Exception {
-        Task task = FakerTestData.getFakerTask();
+        Task task = fakerTestData.getFakerTask();
 
         var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
         task.setTaskStatus(taskStatus);
 
-        User user = FakerTestData.getFakerUser();
+        User user = fakerTestData.getFakerUser();
         userRepository.save(user);
         task.setAssignee(user);
 
@@ -126,7 +129,7 @@ public class TaskControllerTests {
 
     @Test
     public void testShow() throws Exception {
-        Task task = FakerTestData.getFakerTask();
+        Task task = fakerTestData.getFakerTask();
         var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
         task.setTaskStatus(taskStatus);
         var label = labelRepository.findByName(DEFAULT_LABEL_NAME).get();
@@ -152,7 +155,7 @@ public class TaskControllerTests {
 
     @Test
     public void testCreate() throws Exception {
-        Task task = FakerTestData.getFakerTask();
+        Task task = fakerTestData.getFakerTask();
 
         var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
         task.setTaskStatus(taskStatus);
@@ -160,7 +163,7 @@ public class TaskControllerTests {
         var label = labelRepository.findByName(DEFAULT_LABEL_NAME).get();
         task.setLabels(Set.of(label));
 
-        User user = FakerTestData.getFakerUser();
+        User user = fakerTestData.getFakerUser();
         userRepository.save(user);
         task.setAssignee(user);
 
@@ -196,11 +199,11 @@ public class TaskControllerTests {
 
     @Test
     public void testUnauthorizedCreate() throws Exception {
-        Task task = FakerTestData.getFakerTask();
+        Task task = fakerTestData.getFakerTask();
         var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
         task.setTaskStatus(taskStatus);
 
-        User user = FakerTestData.getFakerUser();
+        User user = fakerTestData.getFakerUser();
         userRepository.save(user);
         task.setAssignee(user);
 
@@ -222,12 +225,12 @@ public class TaskControllerTests {
     @Test
     public void testUpdate() throws Exception {
 
-        Task task = FakerTestData.getFakerTask();
+        Task task = fakerTestData.getFakerTask();
 
         var taskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
         task.setTaskStatus(taskStatus);
 
-        User user = FakerTestData.getFakerUser();
+        User user = fakerTestData.getFakerUser();
         userRepository.save(user);
         task.setAssignee(user);
 
@@ -236,12 +239,12 @@ public class TaskControllerTests {
 
         taskRepository.save(task);
 
-        user = FakerTestData.getFakerUser();
+        user = fakerTestData.getFakerUser();
         userRepository.save(user);
 
         var secondLabel = labelRepository.findByName(SECONDARY_LABEL_NAME).get();
 
-        Task newTask = FakerTestData.getFakerTask();
+        Task newTask = fakerTestData.getFakerTask();
         var newTaskStatus = taskStatusRepository.findBySlug("to_be_fixed").get();
         task.setTaskStatus(newTaskStatus);
         task.setTaskStatus(newTaskStatus);
@@ -278,7 +281,7 @@ public class TaskControllerTests {
 
     @Test
     public void testUpdateWithIncorrectData() throws Exception {
-        Task task = FakerTestData.getFakerTask();
+        Task task = fakerTestData.getFakerTask();
         var newTaskStatus = taskStatusRepository.findBySlug("to_be_fixed").get();
         task.setTaskStatus(newTaskStatus);
         taskRepository.save(task);
@@ -297,7 +300,7 @@ public class TaskControllerTests {
 
     @Test
     public void testDelete() throws Exception {
-        Task task = FakerTestData.getFakerTask();
+        Task task = fakerTestData.getFakerTask();
         var newTaskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
         task.setTaskStatus(newTaskStatus);
         taskRepository.save(task);
@@ -314,12 +317,12 @@ public class TaskControllerTests {
 
     @Test
     public void testUserDelete() throws Exception {
-        User user = FakerTestData.getFakerUser();
+        User user = fakerTestData.getFakerUser();
         userRepository.save(user);
 
         token = jwt().jwt(builder -> builder.subject(user.getUsername()));
 
-        Task task = FakerTestData.getFakerTask();
+        Task task = fakerTestData.getFakerTask();
         var newTaskStatus = taskStatusRepository.findBySlug(DEFAULT_TASK_STATUS_SLUG).get();
         task.setTaskStatus(newTaskStatus);
         task.setAssignee(user);
@@ -337,7 +340,7 @@ public class TaskControllerTests {
         var statusSlug = "to_review";
         var status = taskStatusRepository.findBySlug(statusSlug).get();
 
-        Task task = FakerTestData.getFakerTask();
+        Task task = fakerTestData.getFakerTask();
         task.setTaskStatus(status);
         taskRepository.save(task);
 

@@ -44,6 +44,9 @@ public class TaskStatusControllerTests {
     private ObjectMapper om;
 
     @Autowired
+    private FakerTestData fakerTestData;
+
+    @Autowired
     private TaskStatusRepository taskStatusRepository;
 
     @Autowired
@@ -77,7 +80,7 @@ public class TaskStatusControllerTests {
 
     @Test
     public void testShow() throws Exception {
-        TaskStatus taskStatus = FakerTestData.getFakerTaskStatus();
+        TaskStatus taskStatus = fakerTestData.getFakerTaskStatus();
         taskStatusRepository.save(taskStatus);
 
         var request = get("/api/task_statuses/" + taskStatus.getId())
@@ -96,7 +99,7 @@ public class TaskStatusControllerTests {
 
     @Test
     public void testCreate() throws Exception {
-        var taskStatus = FakerTestData.getFakerTaskStatus();
+        var taskStatus = fakerTestData.getFakerTaskStatus();
         var taskStatusCreateDTO = new TaskStatusCreateDTO();
         taskStatusCreateDTO.setSlug(taskStatus.getSlug());
         taskStatusCreateDTO.setName(taskStatus.getName());
@@ -120,7 +123,7 @@ public class TaskStatusControllerTests {
 
     @Test
     public void testCreateWithoutAuth() throws Exception {
-        var taskStatus = FakerTestData.getFakerTaskStatus();
+        var taskStatus = fakerTestData.getFakerTaskStatus();
         var taskStatusCreateDTO = mapper.map(taskStatus);
 
         var request = post("/api/task_statuses/")
@@ -133,10 +136,10 @@ public class TaskStatusControllerTests {
 
     @Test
     public void testUpdate()  throws Exception {
-        var taskStatus = FakerTestData.getFakerTaskStatus();
+        var taskStatus = fakerTestData.getFakerTaskStatus();
         taskStatusRepository.save(taskStatus);
 
-        var newTaskStatus = FakerTestData.getFakerTaskStatus();
+        var newTaskStatus = fakerTestData.getFakerTaskStatus();
         var statusUpdateDTO = new TaskStatusUpdateDTO();
         statusUpdateDTO.setName(JsonNullable.of(newTaskStatus.getName()));
         statusUpdateDTO.setSlug(JsonNullable.of(newTaskStatus.getSlug()));
@@ -155,10 +158,10 @@ public class TaskStatusControllerTests {
 
     @Test
     public void testUpdateWithIncorrectData() throws Exception {
-        var taskStatus = FakerTestData.getFakerTaskStatus();
+        var taskStatus = fakerTestData.getFakerTaskStatus();
         taskStatusRepository.save(taskStatus);
 
-        var newTaskStatus = FakerTestData.getFakerTaskStatus();
+        var newTaskStatus = fakerTestData.getFakerTaskStatus();
         var statusUpdateDTO = new TaskStatusUpdateDTO();
         statusUpdateDTO.setName(JsonNullable.of(""));
         statusUpdateDTO.setSlug(JsonNullable.of(newTaskStatus.getSlug()));
@@ -174,7 +177,7 @@ public class TaskStatusControllerTests {
 
     @Test
     public void testDelete() throws Exception {
-        var taskStatus = FakerTestData.getFakerTaskStatus();
+        var taskStatus = fakerTestData.getFakerTaskStatus();
         taskStatusRepository.save(taskStatus);
 
         var request = delete("/api/task_statuses/" + taskStatus.getId())

@@ -18,6 +18,9 @@ public class UserRepositoryTests {
     private UserRepository repository;
 
     @Autowired
+    private FakerTestData fakerTestData;
+
+    @Autowired
     private Faker faker;
 
     private static User testUser;
@@ -26,7 +29,7 @@ public class UserRepositoryTests {
     @Order(1)
     public void repositoryTest() {
         long recordsCount = repository.count();
-        testUser = FakerTestData.getFakerUser();
+        testUser = fakerTestData.getFakerUser();
         String firstName = testUser.getFirstName();
         String lastName = testUser.getLastName();
         String email = testUser.getEmail();

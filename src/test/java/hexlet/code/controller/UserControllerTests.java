@@ -43,6 +43,9 @@ public class UserControllerTests {
     private ObjectMapper om;
 
     @Autowired
+    private FakerTestData fakerTestData;
+
+    @Autowired
     private DateMapper dateMapper;
 
     @Autowired
@@ -86,7 +89,7 @@ public class UserControllerTests {
 
     @Test
     public void testShow() throws Exception {
-        var user = FakerTestData.getFakerUser();
+        var user = fakerTestData.getFakerUser();
         userRepository.save(user);
 
         var firstName = user.getFirstName();
@@ -113,7 +116,7 @@ public class UserControllerTests {
 
     @Test
     public void testCreate() throws Exception {
-        var testUser = FakerTestData.getFakerUser();
+        var testUser = fakerTestData.getFakerUser();
         var createDTO = new UserCreateDTO();
         createDTO.setEmail(testUser.getEmail());
         createDTO.setFirstName(testUser.getFirstName());
@@ -140,14 +143,14 @@ public class UserControllerTests {
 
     @Test
     public void testUpdate() throws Exception {
-        var testUser = FakerTestData.getFakerUser();
+        var testUser = fakerTestData.getFakerUser();
         var testUserName = testUser.getUsername();
         userRepository.save(testUser);
 
         token = jwt().jwt(builder -> builder.subject(testUserName));
 
-        var newFirstName = FakerTestData.getFakerUserFirstName();
-        var newLastName = FakerTestData.getFakerUserLastName();
+        var newFirstName = fakerTestData.getFakerUserFirstName();
+        var newLastName = fakerTestData.getFakerUserLastName();
         var newPassword = testUser.getPassword();
 
         var userUpdateDTO = new UserUpdateDTO();
@@ -171,7 +174,7 @@ public class UserControllerTests {
 
     @Test
     public void testUpdateWithIncorrectData() throws Exception {
-        var testUser = FakerTestData.getFakerUser();
+        var testUser = fakerTestData.getFakerUser();
         userRepository.save(testUser);
 
         var newPassword = testUser.getPassword().substring(0, 2);
@@ -190,7 +193,7 @@ public class UserControllerTests {
 
     @Test
     public void testDeleteWithIncorrectOwner() throws Exception {
-        var testUser = FakerTestData.getFakerUser();
+        var testUser = fakerTestData.getFakerUser();
         userRepository.save(testUser);
 
         var request = delete("/api/users/" + testUser.getId())
@@ -202,7 +205,7 @@ public class UserControllerTests {
 
     @Test
     public void testDelete() throws Exception {
-        var testUser = FakerTestData.getFakerUser();
+        var testUser = fakerTestData.getFakerUser();
         userRepository.save(testUser);
 
         token = jwt().jwt(builder -> builder.subject(testUser.getUsername()));
@@ -219,7 +222,7 @@ public class UserControllerTests {
 
     @Test
     public void testCreateWithEmptyFields() throws Exception {
-        var testUser = FakerTestData.getFakerUser();
+        var testUser = fakerTestData.getFakerUser();
         var createDTO = new UserCreateDTO();
         createDTO.setEmail(testUser.getEmail());
         createDTO.setFirstName(testUser.getFirstName());
