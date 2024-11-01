@@ -19,5 +19,6 @@ import org.mapstruct.MappingTarget;
 public abstract class LabelMapper {
     public abstract LabelDTO map(Label model);
     public abstract Label map(LabelCreateDTO createDTO);
+    public abstract Label map(LabelDTO dto);
     public abstract void update(LabelUpdateDTO updateDTO, @MappingTarget Label model);
 }

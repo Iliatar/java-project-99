@@ -1,5 +1,6 @@
 package hexlet.code.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.TaskCreateDTO;
 import hexlet.code.dto.TaskDTO;
@@ -12,6 +13,7 @@ import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.FakerTestData;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.openapitools.jackson.nullable.JsonNullable;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Set;
 
 @SpringBootTest
@@ -93,8 +96,12 @@ public class TaskControllerTests {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
-        assertThatJson(body).isArray()
-                .hasSize(taskRepository.findAll().size());
+
+        List<TaskDTO> taskDTOList = om.readValue(body, new TypeReference<>() { });
+        var actual = taskDTOList.stream().map(taskMapper::map).toList();
+        var expected = taskRepository.findAll();
+
+        Assertions.assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
     }
 
     @Test
